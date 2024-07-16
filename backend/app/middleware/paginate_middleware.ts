@@ -10,7 +10,7 @@ export default class PaginateMiddleware {
     const perPageNumber = per_page ? Number(per_page) : 10
 
     request.updateQs({ ...query, page: pageNumber, per_page: perPageNumber })
-
+    console.log('PaginateMiddleware', request.qs())
     await next()
 
     request.updateQs(query)

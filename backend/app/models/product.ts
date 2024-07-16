@@ -22,7 +22,10 @@ export default class Product extends BaseModel {
   @column()
   declare description: string
 
-  @column()
+  @column({
+    consume: (value: string) => JSON.parse(value),
+    prepare: (value: Array<string>) => JSON.stringify(value),
+  })
   declare image: Array<string>
 
   @column()

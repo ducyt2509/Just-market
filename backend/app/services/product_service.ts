@@ -1,4 +1,5 @@
 import { productStatus } from '#enums/status.enum'
+import { IPagination } from '#interfaces/common.interface'
 import { IProductPayload } from '#interfaces/products.interface'
 import { IUser } from '#interfaces/users.interface'
 import Product from '#models/product'
@@ -13,6 +14,9 @@ class ProductService {
       .related('products')
       .query()
       .where('product_name', payload.productName)
+      .where('user_id', userAuth.id)
+      .where('status', productStatus.ACTIVE)
+      .where('price', payload.price)
       .first()
 
     if (isProductExist) {
@@ -26,7 +30,7 @@ class ProductService {
     return await user.related('products').create({
       ...payload,
       status: productStatus.ACTIVE,
-      image: image,
+      image: [JSON.stringify(image)],
     })
   }
 
@@ -77,6 +81,14 @@ class ProductService {
       .firstOrFail()
 
     return product
+  }
+
+  async findManyWithPagination({ page, perPage, query }: IPagination) {
+    if (query) {
+      return await Product.query().where(query).paginate(page, perPage)
+    } else {
+      return await Product.query().paginate(page, perPage)
+    }
   }
 }
 
