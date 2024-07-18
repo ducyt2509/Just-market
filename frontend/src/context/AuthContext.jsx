@@ -1,12 +1,11 @@
 import React, { createContext, useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-
+import { useNavigate } from 'react-router-dom';
 const AuthContext = createContext();
 
 // eslint-disable-next-line react/prop-types
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem("user");
@@ -17,13 +16,16 @@ export const AuthProvider = ({ children }) => {
 
   const login = (userData) => {
     setUser(userData);
+    localStorage.setItem("accessToken", userData.access_token);
+
     localStorage.setItem("user", JSON.stringify(userData));
+    navigate('/products');
+
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
-    history.push("/login");
   };
 
   return (
