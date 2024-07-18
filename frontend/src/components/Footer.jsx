@@ -1,3 +1,4 @@
+
 const navigation = {
     solutions: [
       { name: 'Marketing', href: '#' },
@@ -87,7 +88,7 @@ const navigation = {
       },
     ],
   }
-  
+
   export default function Footer() {
     return (
       <footer aria-labelledby="footer-heading" className="bg-white">
@@ -176,4 +177,3 @@ const navigation = {
       </footer>
     )
   }
-  
