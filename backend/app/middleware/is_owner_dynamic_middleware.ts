@@ -11,7 +11,7 @@ export default class IsOwnerDynamic {
     const [modelName, columnName] = guards
 
     const model = await db.from(modelName).where('id', params.id).first()
-
+    console.log('Model:', user.id, model)
     if (!model || model[columnName] !== user.id) {
       return response.unauthorized({
         status_code: 401,
