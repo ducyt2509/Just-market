@@ -10,4 +10,8 @@ export class UsersController {
 
     response.created(await UserService.update(payload, request.params().id.toString()))
   }
+
+  async aboutMe({ request, response, auth }: HttpContext) {
+    response.ok(await UserService.aboutMe(auth.user as any))
+  }
 }

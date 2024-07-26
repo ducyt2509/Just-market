@@ -9,6 +9,10 @@ class UserService {
 
     return user
   }
+
+  async aboutMe(user: any) {
+    return await User.findOrFail(user.id)
+  }
 }
 
 export default new UserService()
