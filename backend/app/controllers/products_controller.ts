@@ -43,7 +43,9 @@ export default class ProductsController {
   }
 
   async findOneById({ response, request, auth }: HttpContext) {
-    response.ok(await ProductService.getProductById(request.params().id, auth.user as any))
+    response.ok(
+      await ProductService.getProductById(request.params().id, auth.user as any, request.qs())
+    )
   }
 
   async delete({ response, request, auth }: HttpContext) {
@@ -52,6 +54,6 @@ export default class ProductsController {
 
   async findManyWithPagination({ response, request }: HttpContext) {
     const { page, perPage, ...query } = request.qs()
-    response.ok(await ProductService.findManyWithPagination({ ...query, page, perPage }))
+    response.ok(await ProductService.findManyWithPagination({ query, page, perPage }))
   }
 }

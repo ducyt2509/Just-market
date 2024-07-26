@@ -74,21 +74,75 @@ class ProductService {
     return product
   }
 
-  async getProductById(productId: number | string, userAuth: IUser) {
-    const product = await Product.query()
+  async getProductById(productId: number | string, userAuth: IUser, query: any = {}) {
+    console.log('query', query)
+    const productQuery = Product.query()
       .where('id', productId)
-      .where('user_id', userAuth.id)
-      .firstOrFail()
+      .preload('offers', (offerQuery) => {
+        offerQuery.preload('user')
+        offerQuery.preload('product')
+      })
+
+    Object.keys(query).forEach((key) => {
+      if (query[key] !== undefined) {
+        switch (key) {
+          case 'name':
+            productQuery.where('name', 'like', `%${query[key]}%`)
+            break
+          case 'category':
+            productQuery.where('category', query[key])
+            break
+          case 'minPrice':
+            productQuery.where('price', '>=', query[key])
+            break
+          case 'maxPrice':
+            productQuery.where('price', '<=', query[key])
+            break
+          default:
+            productQuery.where(key, query[key])
+        }
+      }
+    })
+    console.log(productQuery.toSQL().sql)
+
+    const product = await productQuery.firstOrFail()
 
     return product
   }
-
   async findManyWithPagination({ page, perPage, query }: IPagination) {
+    console.log('Received query:', query)
+
+    const productQuery = Product.query().preload('user')
+
     if (query) {
-      return await Product.query().where(query).paginate(page, perPage)
-    } else {
-      return await Product.query().paginate(page, perPage)
+      Object.keys(query).forEach((key) => {
+        if (query[key] !== undefined && key !== 'page' && key !== 'perPage') {
+          switch (key) {
+            case 'name':
+              productQuery.where('name', 'like', `%${query[key]}%`)
+              break
+            case 'category':
+              productQuery.where('category', query[key])
+              break
+            case 'minPrice':
+              productQuery.where('price', '>=', query[key])
+              break
+            case 'maxPrice':
+              productQuery.where('price', '<=', query[key])
+              break
+            default:
+              productQuery.where(key, query[key])
+          }
+        }
+      })
     }
+
+    // Log query for debugging
+
+    const products = await productQuery.paginate(page, perPage)
+    console.log(productQuery.toSQL().sql)
+
+    return products
   }
 }
 

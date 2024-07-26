@@ -10,7 +10,7 @@ export default class extends BaseSchema {
       table.string('product_name').notNullable()
       table.integer('price').notNullable()
       table.integer('quantity').notNullable()
-      table.string('description').notNullable()
+      table.text('description').notNullable()
       table.string('image').notNullable()
       table.enum('status', Object.keys(productStatus)).notNullable()
       table.timestamp('created_at').defaultTo(this.now())
