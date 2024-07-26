@@ -42,9 +42,9 @@ export default class ProductsController {
     )
   }
 
-  async findOneById({ response, request, auth }: HttpContext) {
+  async findOneById({ response, request }: HttpContext) {
     response.ok(
-      await ProductService.getProductById(request.params().id, auth.user as any, request.qs())
+      await ProductService.getProductById(request.params().id, request.qs())
     )
   }
 
