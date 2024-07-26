@@ -43,16 +43,17 @@ router.use([
  * the routes or the routes group.
  */
 export const middleware = router.named({
+  paginate: () => import('#middleware/paginate_middleware'),
+  checkPermission: () => import('#middleware/check_permission_middleware'),
+  isOwnerDynamic: () => import('#middleware/is_owner_dynamic_middleware'),
   auth: () => import('#middleware/auth_middleware'),
 })
 
 const appMiddleware = [
-  // Các middleware khác
   'Adonis/Middleware/BodyParser',
   'Adonis/Middleware/Session',
   'Adonis/Middleware/Shield',
   'Adonis/Middleware/AuthInit',
-  // Thêm middleware xử lý file
   'Adonis/Middleware/Static',
   'Adonis/Middleware/Cors',
 ]

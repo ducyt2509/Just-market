@@ -19,10 +19,25 @@ export default class Offer extends BaseModel {
   declare amount: number
 
   @column()
+  declare productId: number
+
+  @column()
   declare status: offerStatus
 
-  @belongsTo(() => User)
-  declare User: BelongsTo<typeof User>
+  @column()
+  declare userId: number
+
+  @column()
+  declare ownerId: number // Add this line
+
+  @column.dateTime()
+  declare expiredAt: DateTime
+
+  @belongsTo(() => User, { foreignKey: 'userId' })
+  declare user: BelongsTo<typeof User>
+
+  @belongsTo(() => User, { foreignKey: 'ownerId' }) // Add this line
+  declare owner: BelongsTo<typeof User>
 
   @belongsTo(() => Product)
   declare product: BelongsTo<typeof Product>
