@@ -6,7 +6,6 @@ import { IUser } from '#interfaces/users.interface'
 import Offer from '#models/offer'
 import Product from '#models/product'
 import User from '#models/user'
-import db from '@adonisjs/lucid/services/db'
 import { DateTime } from 'luxon'
 
 class OfferService {

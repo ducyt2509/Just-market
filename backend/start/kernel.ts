@@ -48,12 +48,3 @@ export const middleware = router.named({
   isOwnerDynamic: () => import('#middleware/is_owner_dynamic_middleware'),
   auth: () => import('#middleware/auth_middleware'),
 })
-
-const appMiddleware = [
-  'Adonis/Middleware/BodyParser',
-  'Adonis/Middleware/Session',
-  'Adonis/Middleware/Shield',
-  'Adonis/Middleware/AuthInit',
-  'Adonis/Middleware/Static',
-  'Adonis/Middleware/Cors',
-]

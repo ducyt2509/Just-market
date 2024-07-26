@@ -6,12 +6,12 @@ import { CreateOfferValidator } from '#validators/offer'
 
 @inject()
 export default class OffersController {
-  async findManyWithPagination({ response, request, auth }: HttpContext) {
+  async findManyWithPagination({ response, request }: HttpContext) {
     const { page, perPage, ...query } = request.qs()
     response.ok(await OfferService.findManyWithPagination({ page, perPage, query }))
   }
 
-  async findOneById({ response, request, auth }: HttpContext) {
+  async findOneById({ response, request }: HttpContext) {
     response.ok(await OfferService.findOneById(request.params().id))
   }
 

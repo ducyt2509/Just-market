@@ -2,7 +2,6 @@ import { DateTime } from 'luxon'
 
 import { JwtAccessTokenProvider, JwtSecret } from '#providers/jwt_access_token_provider'
 import parseDuration from 'parse-duration'
-import env from '#start/env'
 import { compose } from '@adonisjs/core/helpers'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import hash from '@adonisjs/core/services/hash'

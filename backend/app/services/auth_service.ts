@@ -1,7 +1,6 @@
 import User from '#models/user'
 import { IRegisterPayload } from '#interfaces/auth.interface'
 import Role from '#models/role'
-import { Secret } from '@adonisjs/core/helpers'
 
 class AuthService {
   async register(payload: IRegisterPayload) {

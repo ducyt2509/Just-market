@@ -74,7 +74,7 @@ class ProductService {
     return product
   }
 
-  async getProductById(productId: number | string, userAuth: IUser, query: any = {}) {
+  async getProductById(productId: number | string, query: any = {}) {
     console.log('query', query)
     const productQuery = Product.query()
       .where('id', productId)
