@@ -67,8 +67,10 @@ export function ProductDashboard() {
     
   };
 
+  const fieldUpdate = ['id' , 'productName','description','price','quantity', "image"];
+
   const schema = z.object({
-    productName: z.string().min(1, "Username is required"),
+    productName: z.string().min(1, "Product Name is required"),
     description: z.string().min(1, "Description is required"),
     price: z.number().min(1, "Price is required"),
     quantity: z.number().min(1, "Quantity is required"),
@@ -90,17 +92,7 @@ export function ProductDashboard() {
     description: z.string().min(1, "Description is required").optional(),
     price: z.number().min(1, "Price is required").optional(),
     quantity: z.number().min(1, "Quantity is required").optional(),
-    image: z.array(z.instanceof(File))
-    .min(0)
-    .max(1, "Please choose only one image.")
-    .refine(
-      (files) => files.length === 0 || ["image/jpeg", "image/png", "image/gif"].includes(files[0].type),
-      "Only .jpg, .png, and .gif files are accepted."
-    )
-    .refine(
-      (files) => files.length === 0 || files[0].size <= 2 * 1024 * 1024,
-      "Image size must be less than 2MB."
-    ).optional(),
+    image : z.any().optional(),
   });
 
   const defaultValues = {
@@ -127,6 +119,7 @@ export function ProductDashboard() {
         btnCssForm={"bg-indigo-600 hover:bg-indigo-700"}
         titleForm={"Add Product"}
         schemaUpdate={schemaUpdate}
+        fieldUpdate={fieldUpdate}
       />
      
     </>

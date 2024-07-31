@@ -26,6 +26,8 @@ export default function DynamicForm({
   handleClose,
   handleModal,
 }) {
+
+  
   const {
     register,
     handleSubmit,

@@ -31,6 +31,7 @@ function DropdownMenu({
   isConfirmed = false,
   isAction = false,
   handleConfirmed = () => {},
+
 }) {
   return (
     <Menu as="div" className="relative inline-block text-left">
@@ -184,7 +185,8 @@ export default function DynamicTable({
   btnForm = null,
   btnCssForm = null,
   titleForm = null,
-  schemaUpdate = null
+  schemaUpdate = null,
+  fieldUpdate = []
 }) {
   const [selectData, setSelectData] = useState({
     id: 1,
@@ -222,6 +224,9 @@ export default function DynamicTable({
     page: 1,
     perPage: 10,
   });
+
+  const [initialDataUpdate, setInitialDataUpdate] = useState({});
+ 
 
   const [{ data: findMany, loading, error: findManyError }, handleFindMany] =
     useAxios({
@@ -337,6 +342,16 @@ export default function DynamicTable({
   };
 
   const handleUpdateData = async (data) => {
+
+    const updateData = fieldUpdate.reduce((acc, field) => {
+      console.log("field", field , data[field]);
+      acc[field] = data[field];
+      return acc;
+    } , {});
+
+    console.log("updateData", updateData);
+
+    setInitialDataUpdate(updateData);
     setSelectData(data);
     setModalUpdate(true);
   };
@@ -447,7 +462,7 @@ export default function DynamicTable({
                                           column.accessor
                                         )}
                                       </span>
-                                    ) : column.isDescription ? (
+                                    ) : !column.isDescription ? (
                                       getValueByAccessor(item, column.accessor)
                                     ) : (
                                       descConvert(
@@ -586,7 +601,7 @@ export default function DynamicTable({
         formConfig={formConfig}
         url={url}
         schema={schemaUpdate}
-        initialData={selectData}
+        initialData={initialDataUpdate}
         handleClose={()=>{setModalUpdate(false)}}
         handleModal={handleModal}
       />

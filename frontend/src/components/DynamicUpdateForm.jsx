@@ -36,12 +36,10 @@ export default function DynamicFormUpdate({
   } = useForm({
     defaultValues: {
       ...initialData,
-      image: initialData.image ? JSON.parse(initialData.image[0])[0] : null,
     },
     resolver: zodResolver(schema),
     mode: "onBlur",
   });
-
   const [previewUrl, setPreviewUrl] = useState(() => {
     if (initialData.image) {
       const parsedImages = JSON.parse(initialData.image[0]);
@@ -49,7 +47,12 @@ export default function DynamicFormUpdate({
     }
     return null;
   });
-  
+  const [file, setFile] = useState(null);
+
+  const handleFileChange = (event) => {
+    console.log("File 1111111", event.target.files[0]);
+    setFile(event.target.files[0]);
+  };
   
 
   const [{ data: dataResponse, loading, error }, handleSubmitData] = useAxios(
@@ -67,18 +70,33 @@ export default function DynamicFormUpdate({
 
   const onSubmit = async (data) => {
     try {
-      
+      if(data.image.length > 0){
+        const formData = new FormData();
+        console.log("data.image[0]" , data.image)
+        formData.append("image", data.image[0].originFileObj);
+        formData.append("productName", data.productName);
+        formData.append("description", data.description);
+        formData.append("price", data.price);
+        formData.append("quantity", data.quantity);
+        formData.append("id", data.id);
+ const response = await handleSubmitData({ data:formData})
+       
+      }else{
+        
       const response = await handleSubmitData({
         data: data,
+        
       });
-      // console.log("Response " , response);
-      // handleModal({
-      //   loading: false,
-      //   title: `${title} Notification`,
-      //   desc: response.data.message,
-      //   isError: false,
-      //   isOpen: true,
-      // });
+
+      handleModal({
+        loading: false,
+        title: `${title} Notification`,
+        desc: response.data.message,
+        isError: false,
+        isOpen: true,
+      });
+    
+    }
     } catch (error) {
       console.log("Error " , error);
       handleModal({
@@ -95,7 +113,7 @@ export default function DynamicFormUpdate({
   const onDrop = useCallback(
     (acceptedFiles, fileRejections) => {
       clearErrors("image");
-
+  
       if (fileRejections.length) {
         setError("image", {
           type: "manual",
@@ -104,17 +122,16 @@ export default function DynamicFormUpdate({
         setPreviewUrl(null);
         return;
       }
-
+  
       if (acceptedFiles.length > 0) {
         const file = acceptedFiles[0];
-        setValue("image", [file]);
+        setValue("image", [file]);  
         const objectUrl = URL.createObjectURL(file);
         setPreviewUrl(objectUrl);
       }
     },
     [setValue, setError, clearErrors]
   );
-
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: "image/jpeg, image/png, image/gif",
@@ -232,6 +249,7 @@ export default function DynamicFormUpdate({
                     src={previewUrl}
                     alt="Preview"
                     className="w-full h-full object-cover rounded-lg"
+                    onChange={handleFileChange}
                   />
                   <button
                     type="button"
@@ -249,7 +267,8 @@ export default function DynamicFormUpdate({
                   {...getRootProps()}
                   className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10 w-full"
                 >
-                  <input {...getInputProps()} />
+                  <input {...getInputProps()} 
+                  />
                   <div className="text-center">
                     <PhotoIcon
                       aria-hidden="true"

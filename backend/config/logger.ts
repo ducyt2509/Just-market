@@ -5,10 +5,6 @@ import { defineConfig, targets } from '@adonisjs/core/logger'
 const loggerConfig = defineConfig({
   default: 'app',
 
-  /**
-   * The loggers object can be used to define multiple loggers.
-   * By default, we configure only one logger (named "app").
-   */
   loggers: {
     app: {
       enabled: true,
@@ -16,8 +12,8 @@ const loggerConfig = defineConfig({
       level: env.get('LOG_LEVEL'),
       transport: {
         targets: targets()
-          .pushIf(!app.inProduction, targets.pretty())
-          .pushIf(app.inProduction, targets.file({ destination: 1 }))
+          .pushIf(!app.inProduction, targets.pretty({ destination: 1 })) // Đảm bảo sử dụng đúng target
+          .pushIf(app.inProduction, targets.file({ destination: 'app.log' })) // Đảm bảo sử dụng đúng đường dẫn file
           .toArray(),
       },
     },
@@ -26,10 +22,6 @@ const loggerConfig = defineConfig({
 
 export default loggerConfig
 
-/**
- * Inferring types for the list of loggers you have configured
- * in your application.
- */
 declare module '@adonisjs/core/types' {
   export interface LoggersList extends InferLoggers<typeof loggerConfig> {}
 }

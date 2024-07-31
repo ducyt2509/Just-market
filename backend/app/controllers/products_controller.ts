@@ -23,8 +23,10 @@ export default class ProductsController {
   }
 
   async update({ request, auth, response }: HttpContext) {
+    console.log('request.all()', request.all())
     const { productName, price, quantity, description, status } = request.all()
     const image = request.files('image', { extnames: ['jpg', 'png'], size: '10mb' })
+    console.log('Images ', image)
 
     const data = {
       productName,
@@ -43,9 +45,7 @@ export default class ProductsController {
   }
 
   async findOneById({ response, request }: HttpContext) {
-    response.ok(
-      await ProductService.getProductById(request.params().id, request.qs())
-    )
+    response.ok(await ProductService.getProductById(request.params().id, request.qs()))
   }
 
   async delete({ response, request, auth }: HttpContext) {

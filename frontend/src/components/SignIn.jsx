@@ -15,6 +15,7 @@ const signInSchema = z.object({
 
 export default function SignIn() {
     const {login} = useAuth();
+    
     const {
         register,
         handleSubmit,
