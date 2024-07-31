@@ -1,49 +1,38 @@
 version: '3'
+
 services:
   server:
     build: .
     expose:
       - ${PORT}
-    environment:
-      PORT: ${PORT}
-      HOST: ${HOST}
-      NODE_ENV: production
-      LOG_LEVEL: ${LOG_LEVEL}
-      SESSION_DRIVER: ${SESSION_DRIVER}
-      DB_PORT: ${DB_PORT}
-      DB_DATABASE: ${DB_DATABASE}
-      APP_KEY: ${APP_KEY}
-      DB_HOST: ${DB_HOST}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
+    env_file:
+      - .env
     depends_on:
-      - mysql
+      - postgresql
+    links:
+      - postgresql
     command: sh -c "node ace migration:run && node bin/server.js"
 
-  mysql:
-    image: mysql:latest
+  postgresql:
+    image: postgres:13-alpine
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - mysql_data:/var/lib/mysql
+      - pgdata:/var/lib/postgresql/data
 
   nginx:
     image: nginx:alpine
     ports:
-      - '8000:80'
+      - ${POST}:80
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf.template:ro
     depends_on:
       - server
     command: /bin/sh -c "envsubst '$$PORT' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
     environment:
-      - PORT=3333
-    links:
-      - server
+      - PORT=${PORT}
+
 volumes:
-  mysql_data:
+  pgdata:

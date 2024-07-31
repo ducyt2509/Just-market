@@ -6,6 +6,12 @@ import { UsersController } from '#controllers/users_controller'
 import { middleware } from './kernel.js'
 import OffersController from '#controllers/offers_controller'
 
+router.get('/', async () => {
+  return { hello: 'world' }
+})
+
+console.log('API IS RUNNING >>>>>>')
+
 router
   .group(() => {
     router.post('register', [AuthController, 'register'])

@@ -1,16 +1,35 @@
-##### Dockerfile #####
-## build stage ##
-FROM node:18.18-alpine as build
+# Use the official Node.js image as the base image
+FROM node:16-alpine AS build
 
+# Set the working directory
 WORKDIR /app
-COPY frontend ./
+
+# Copy the package.json and package-lock.json files to the working directory
+COPY package*.json ./
+
+# Install dependencies
 RUN npm install
+
+# Copy the rest of the application code to the working directory
+COPY . .
+
+# Build the application
 RUN npm run build
 
-## run stage ##
-FROM nginx:alpine
+# Use a lightweight server to serve the built application
+FROM node:16-alpine
 
-COPY --from=build /app/dist /usr/share/nginx/html
+# Install `serve` to serve the application
+RUN npm install -g serve
 
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Set the working directory
+WORKDIR /app
+
+# Copy the built files from the build stage
+COPY --from=build /app/dist /app
+
+# Expose port 5000
+EXPOSE 3000
+
+# Start the server
+CMD ["serve", "-s", ".", "-l", "3000"]
