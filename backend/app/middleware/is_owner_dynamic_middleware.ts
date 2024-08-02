@@ -10,8 +10,20 @@ export default class IsOwnerDynamic {
     const user = await auth.authenticate()
     const [modelName, columnName] = guards
 
+    console.log('Model:', modelName, columnName)
+
     const model = await db.from(modelName).where('id', params.id).first()
     console.log('Model:', user.id, model)
+    if (model == null) {
+      return response.notFound({
+        status_code: 404,
+        errors: [
+          {
+            message: "'Resource not found'",
+          },
+        ],
+      })
+    }
     if (!model || model[columnName] !== user.id) {
       return response.unauthorized({
         status_code: 401,

@@ -2,41 +2,35 @@ version: '3.8'
 
 services:
   client-app:
-    build: ./frontend
+    image: bean2509/nftmarketplace-client
     env_file:
-      - .env
+      - ./frontend/.env
     expose:
       - '5000'
 
   backend-app:
-    build: ./backend
-    volumes:
-      - ./backend:/usr/src/app
+    image: bean2509/nftmarketplace-backend
     env_file:
       - .env
     expose:
-      - ${PORT}
+      - '3333'
     depends_on:
       db:
         condition: service_healthy
-
-    links:
-      - db
-    command: sh -c "node ace migration:run && node bin/server.js"
+    command: sh -c "node ace migration:fresh && node ace db:seed && node bin/server.js"
 
   db:
-    image: postgres
+    image: mysql:latest
     restart: always
-    ports:
-      - '5432:5432'
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: market
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 123456
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - mysql-data:/var/lib/mysql
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER} -d ${DB_DATABASE}']
+      test: ['CMD-SHELL', 'mysqladmin ping -h localhost --silent']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -46,10 +40,10 @@ services:
     ports:
       - '80:80'
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./frontend/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - client-app
       - backend-app
 
 volumes:
-  postgres-data:
+  mysql-data:

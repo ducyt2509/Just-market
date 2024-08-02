@@ -1,19 +1,20 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useDropzone } from "react-dropzone";
+import React, { useCallback, useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { useDropzone } from 'react-dropzone'
 import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
-} from "@headlessui/react";
-import { PhotoIcon } from "@heroicons/react/24/outline";
-import useAxios from "axios-hooks";
-import axiosInstance from "../config/axiosInstance";
-import Header from './Header';
-import qs from 'qs';
+} from '@headlessui/react'
+import { PhotoIcon } from '@heroicons/react/24/outline'
+import useAxios from 'axios-hooks'
+import axiosInstance from '../config/axiosInstance'
+import Header from './Header'
+import qs from 'qs'
+import axios from 'axios'
 
 export default function DynamicFormUpdate({
   title,
@@ -25,6 +26,7 @@ export default function DynamicFormUpdate({
   initialData,
   handleClose,
   handleModal,
+  handleUpdateData,
 }) {
   const {
     register,
@@ -38,116 +40,63 @@ export default function DynamicFormUpdate({
       ...initialData,
     },
     resolver: zodResolver(schema),
-    mode: "onBlur",
-  });
+    mode: 'onBlur',
+  })
   const [previewUrl, setPreviewUrl] = useState(() => {
     if (initialData.image) {
-      const parsedImages = JSON.parse(initialData.image[0]);
-      return parsedImages[0] || null;
+      const parsedImages = JSON.parse(initialData.image[0])
+      return parsedImages[0] || null
     }
-    return null;
-  });
-  const [file, setFile] = useState(null);
+    return null
+  })
+  const [file, setFile] = useState(null)
 
   const handleFileChange = (event) => {
-    console.log("File 1111111", event.target.files[0]);
-    setFile(event.target.files[0]);
-  };
-  
-
-  const [{ data: dataResponse, loading, error }, handleSubmitData] = useAxios(
-    {
-      url: `${url}/${initialData.id}`,
-      axios: axiosInstance,
-      method: 'put',
-      Headers : {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-     
-    },
-    { manual: true }
-  );
+    setFile(event.target.files[0])
+  }
 
   const onSubmit = async (data) => {
-    try {
-      if(data.image.length > 0){
-        const formData = new FormData();
-        console.log("data.image[0]" , data.image)
-        formData.append("image", data.image[0].originFileObj);
-        formData.append("productName", data.productName);
-        formData.append("description", data.description);
-        formData.append("price", data.price);
-        formData.append("quantity", data.quantity);
-        formData.append("id", data.id);
- const response = await handleSubmitData({ data:formData})
-       
-      }else{
-        
-      const response = await handleSubmitData({
-        data: data,
-        
-      });
+    handleUpdateData(data)
+  }
 
-      handleModal({
-        loading: false,
-        title: `${title} Notification`,
-        desc: response.data.message,
-        isError: false,
-        isOpen: true,
-      });
-    
-    }
-    } catch (error) {
-      console.log("Error " , error);
-      handleModal({
-        loading: false,
-        title: `${title} Notification`,
-        desc: error.response.data.errors[0].message,
-        isError: true,
-        isOpen: true,
-      });
-    }
-    handleClose(false);
-  };
-  
   const onDrop = useCallback(
     (acceptedFiles, fileRejections) => {
-      clearErrors("image");
-  
+      clearErrors('image')
+
       if (fileRejections.length) {
-        setError("image", {
-          type: "manual",
+        setError('image', {
+          type: 'manual',
           message: fileRejections[0].errors[0].message,
-        });
-        setPreviewUrl(null);
-        return;
+        })
+        setPreviewUrl(null)
+        return
       }
-  
+
       if (acceptedFiles.length > 0) {
-        const file = acceptedFiles[0];
-        setValue("image", [file]);  
-        const objectUrl = URL.createObjectURL(file);
-        setPreviewUrl(objectUrl);
+        const file = acceptedFiles[0]
+        setValue('image', [file])
+        const objectUrl = URL.createObjectURL(file)
+        setPreviewUrl(objectUrl)
       }
     },
-    [setValue, setError, clearErrors]
-  );
+    [setValue, setError, clearErrors],
+  )
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: "image/jpeg, image/png, image/gif",
+    accept: 'image/jpeg, image/png, image/gif',
     maxSize: 2 * 1024 * 1024,
-  });
+  })
 
   useEffect(() => {
     return () => {
-      if (previewUrl && previewUrl.startsWith("blob:")) {
-        URL.revokeObjectURL(previewUrl);
+      if (previewUrl && previewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl)
       }
-    };
-  }, [previewUrl]);
+    }
+  }, [previewUrl])
   const renderField = (key, config) => {
     switch (config.field) {
-      case "input":
+      case 'input':
         return (
           <div key={key} className="sm:col-span-4">
             <label
@@ -160,7 +109,7 @@ export default function DynamicFormUpdate({
               <input
                 id={key}
                 {...register(key, {
-                  valueAsNumber: config.type === "number",
+                  valueAsNumber: config.type === 'number',
                 })}
                 type={config.type}
                 placeholder={config.placeholder}
@@ -174,9 +123,9 @@ export default function DynamicFormUpdate({
               )}
             </div>
           </div>
-        );
+        )
 
-      case "textarea":
+      case 'textarea':
         return (
           <div key={key} className="sm:col-span-4">
             <label
@@ -200,9 +149,9 @@ export default function DynamicFormUpdate({
               )}
             </div>
           </div>
-        );
+        )
 
-      case "select":
+      case 'select':
         return (
           <div key={key} className="sm:col-span-4">
             <label
@@ -231,9 +180,9 @@ export default function DynamicFormUpdate({
               )}
             </div>
           </div>
-        );
+        )
 
-      case "image":
+      case 'image':
         return (
           <div key={key} className="sm:col-span-4">
             <label
@@ -254,8 +203,8 @@ export default function DynamicFormUpdate({
                   <button
                     type="button"
                     onClick={() => {
-                      setPreviewUrl(null);
-                      setValue("image", []);
+                      setPreviewUrl(null)
+                      setValue('image', [])
                     }}
                     className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full"
                   >
@@ -267,8 +216,7 @@ export default function DynamicFormUpdate({
                   {...getRootProps()}
                   className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10 w-full"
                 >
-                  <input {...getInputProps()} 
-                  />
+                  <input {...getInputProps()} />
                   <div className="text-center">
                     <PhotoIcon
                       aria-hidden="true"
@@ -294,13 +242,11 @@ export default function DynamicFormUpdate({
               )}
             </div>
           </div>
-        );
+        )
       default:
-        return null;
+        return null
     }
-  };
-
- 
+  }
 
   return (
     <Dialog open={true} onClose={() => {}} className="relative z-50 w-[60vw]">
@@ -329,7 +275,7 @@ export default function DynamicFormUpdate({
                   >
                     <div className="space-y-6">
                       {Object.keys(formConfig).map((key) =>
-                        renderField(key, formConfig[key])
+                        renderField(key, formConfig[key]),
                       )}
                     </div>
 
@@ -355,5 +301,5 @@ export default function DynamicFormUpdate({
         </div>
       </div>
     </Dialog>
-  );
+  )
 }

@@ -39,7 +39,6 @@ class OfferService {
   }
 
   async create(payload: IOfferPayload, userAuth: IUser) {
-    // Find user and product
     const user = await User.findOrFail(userAuth.id)
     const product = await Product.findOrFail(payload.productId)
 
@@ -69,6 +68,7 @@ class OfferService {
       status: offerStatus.PENDING,
       productId: product.id,
       userId: user.id,
+      ownerId: product.userId,
       expiredAt: expiredAt,
     })
 
@@ -80,7 +80,7 @@ class OfferService {
     action: keyof typeof offerStatus | offerStatus
   ): Promise<Offer> {
     const offer = await Offer.findOrFail(offerId)
-    if (offer.status !== offerStatus.PENDING) {
+    if (offer.status.toLocaleLowerCase() !== offerStatus.PENDING.toLocaleLowerCase()) {
       throw new CustomException('Offer is not pending', 400)
     }
 
@@ -96,6 +96,12 @@ class OfferService {
     }
 
     await offer.save()
+    await Offer.query()
+      .where('product_id', offer.productId)
+      .where('status', offerStatus.CANCELLED)
+      .update({ status: offerStatus.REJECTED })
+
+    await Product.query().where('id', offer.productId).update({ userId: offer.userId })
 
     return offer
   }

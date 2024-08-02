@@ -9,7 +9,6 @@ export default class extends BaseSchema {
       table.increments('id')
       table.string('product_name').notNullable()
       table.integer('price').notNullable()
-      table.integer('quantity').notNullable()
       table.text('description').notNullable()
       table.string('image').notNullable()
       table.enum('status', Object.keys(productStatus)).notNullable()

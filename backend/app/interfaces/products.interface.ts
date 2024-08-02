@@ -14,7 +14,6 @@ export interface IProductPayload {
   productName: string
   description: string
   price: number
-  quantity: number
   image: MultipartFile[]
   status?: productStatus
 }

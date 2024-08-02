@@ -1,13 +1,13 @@
-"use client";
+'use client'
 
-import { useState } from "react";
+import { useState } from 'react'
 import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
-} from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/24/outline";
+} from '@headlessui/react'
+import { CheckIcon } from '@heroicons/react/24/outline'
 
 export default function DialogCustom({
   isOpen,
@@ -53,7 +53,7 @@ export default function DialogCustom({
               <button
                 type="button"
                 onClick={() => handleAction(action)}
-                className={`${btnCss} inline-flex w-full justify-center rounded-md   py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2`}
+                className={`${btnCss} inline-flex w-full justify-center rounded-md   py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2 text-white`}
               >
                 {btn}
               </button>
@@ -70,5 +70,5 @@ export default function DialogCustom({
         </div>
       </div>
     </Dialog>
-  );
+  )
 }

@@ -1,4 +1,5 @@
 import { productStatus } from '#enums/status.enum'
+import CustomException from '#exceptions/custom_exception'
 import { IPagination } from '#interfaces/common.interface'
 import { IProductPayload } from '#interfaces/products.interface'
 import { IUser } from '#interfaces/users.interface'
@@ -20,7 +21,7 @@ class ProductService {
       .first()
 
     if (isProductExist) {
-      throw new Error('Product already exist')
+      throw new CustomException('Product already exist', 400)
     }
     const imageTMP = payload.image.map((file) => ({ tmpPath: file.tmpPath || '' }))
     const imageLinks = await UploadCloudinary.uploadFiles(imageTMP)
@@ -43,14 +44,15 @@ class ProductService {
       .where('user_id', userAuth.id)
       .firstOrFail()
     let payload = {}
-    if (data.image) {
+    if (data.image && data.image.length > 0) {
       const imageTMP = data.image.map((file) => ({ tmpPath: file.tmpPath || '' }))
       const imageLinks = await UploadCloudinary.uploadFiles(imageTMP)
       delete (data as { image?: any }).image
-      const image = imageLinks.files?.map((file) => file.url) || []
-      product.image = image
-      payload = { ...data, image }
+      const image = imageLinks.files?.map((file) => file.url) || ['[]']
+      product.image = [JSON.stringify(image)]
+      payload = { ...data, image: [JSON.stringify(image)] }
     } else {
+      delete data.image
       payload = data
     }
 
@@ -81,6 +83,7 @@ class ProductService {
       .preload('offers', (offerQuery) => {
         offerQuery.preload('user')
         offerQuery.preload('product')
+        offerQuery.orderBy('created_at', 'desc')
       })
 
     Object.keys(query).forEach((key) => {

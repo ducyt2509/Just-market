@@ -1,27 +1,29 @@
-import { useEffect, useState } from "react";
-import { Fragment } from "react";
-import { Menu, Transition } from "@headlessui/react";
-import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
+import { useEffect, useState } from 'react'
+import { Fragment } from 'react'
+import { Menu, Transition } from '@headlessui/react'
+import { EllipsisVerticalIcon } from '@heroicons/react/24/outline'
 import {
   EyeIcon,
   TrashIcon,
   PencilIcon,
   HandThumbUpIcon,
   HandThumbDownIcon,
-} from "@heroicons/react/24/outline";
-import axiosInstance from "../config/axiosInstance";
-import DialogCustom from "./DialogCustom";
-import useAxios from "axios-hooks";
-import Loading from "./Loading";
-import Modal from "./Modal";
-import DynamicForm from "./DynamicFormDialog";
-import { useAuth } from "../context/AuthContext";
-import Pagination from "./Pagination";
-import { convertDateFormat } from "./../config/timeConvert";
-import ModalProductDetail from "./ModalProductDetail";
-import ModalOfferDetail from "./ModalOfferDetail";
-import { descConvert } from "../config/descConvert";
-import DynamicFormUpdate from "./DynamicUpdateForm";
+} from '@heroicons/react/24/outline'
+import axiosInstance from '../config/axiosInstance'
+import DialogCustom from './DialogCustom'
+import useAxios from 'axios-hooks'
+import Loading from './Loading'
+import Modal from './Modal'
+import DynamicForm from './DynamicFormDialog'
+import { useAuth } from '../context/AuthContext'
+import Pagination from './Pagination'
+import { convertDateFormat } from './../config/timeConvert'
+import ModalProductDetail from './ModalProductDetail'
+import ModalOfferDetail from './ModalOfferDetail'
+import { descConvert } from '../config/descConvert'
+import DynamicFormUpdate from './DynamicUpdateForm'
+import axios from 'axios'
+import { API_URL } from './../config/api'
 
 function DropdownMenu({
   handleView,
@@ -31,7 +33,6 @@ function DropdownMenu({
   isConfirmed = false,
   isAction = false,
   handleConfirmed = () => {},
-
 }) {
   return (
     <Menu as="div" className="relative inline-block text-left">
@@ -56,7 +57,7 @@ function DropdownMenu({
                 {({ active }) => (
                   <div
                     className={`${
-                      active ? "bg-gray-100" : ""
+                      active ? 'bg-gray-100' : ''
                     } block px-4 py-2 text-sm text-gray-700`}
                     onClick={() => handleView(data)}
                   >
@@ -72,7 +73,7 @@ function DropdownMenu({
                   <div
                     onClick={() => handleDelete(data)}
                     className={`${
-                      active ? "bg-gray-100" : ""
+                      active ? 'bg-gray-100' : ''
                     } block px-4 py-2 text-sm text-gray-700`}
                   >
                     <span>
@@ -87,7 +88,7 @@ function DropdownMenu({
                   <div
                     onClick={() => handleUpdate(data)}
                     className={`${
-                      active ? "bg-gray-100" : ""
+                      active ? 'bg-gray-100' : ''
                     } block px-4 py-2 text-sm text-gray-700`}
                   >
                     <span>
@@ -104,7 +105,7 @@ function DropdownMenu({
                 {({ active }) => (
                   <div
                     className={`${
-                      active ? "bg-gray-100" : ""
+                      active ? 'bg-gray-100' : ''
                     } block px-4 py-2 text-sm text-gray-700`}
                     onClick={() => handleView(data)}
                   >
@@ -119,9 +120,11 @@ function DropdownMenu({
                 <Menu.Item className="flex gap-3 justify-start">
                   {({ active }) => (
                     <div
-                      onClick={() => handleConfirmed("accepted")}
+                      onClick={() => {
+                        handleConfirmed('accepted', data)
+                      }}
                       className={`${
-                        active ? "bg-gray-100" : ""
+                        active ? 'bg-gray-100' : ''
                       } block px-4 py-2 text-sm text-gray-700`}
                     >
                       <span>
@@ -136,9 +139,9 @@ function DropdownMenu({
                 <Menu.Item className="flex gap-3 justify-start">
                   {({ active }) => (
                     <div
-                      onClick={() => handleConfirmed("rejected")}
+                      onClick={() => handleConfirmed('rejected', data)}
                       className={`${
-                        active ? "bg-gray-100" : ""
+                        active ? 'bg-gray-100' : ''
                       } block px-4 py-2 text-sm text-gray-700`}
                     >
                       <span>
@@ -154,21 +157,21 @@ function DropdownMenu({
         </Menu.Items>
       </Transition>
     </Menu>
-  );
+  )
 }
 
 const status = {
-  ACTIVE: "bg-green-100 ring-green-600 text-green-700",
-  INACTIVE: "bg-gray-100 ring-gray-600 text-gray-700",
-  DELETED: "bg-red-100 ring-red-600 text-red-700",
-  IN_REVIEW: "bg-yellow-100 ring-yellow-600 text-yellow-700",
-  ACCEPTED: "bg-green-100 ring-green-600 text-green-700",
-  REJECTED: "bg-red-100 ring-red-600 text-red-700",
-  CANCELLED: "bg-gray-100 ring-gray-600 text-gray-700",
-  SUCCESS: "bg-green-100 ring-green-600 text-green-700",
-  FAILED: "bg-red-100 ring-red-600 text-red-700",
-  PENDING: "bg-yellow-100 ring-yellow-600 text-yellow-700",
-};
+  ACTIVE: 'bg-green-100 ring-green-600 text-green-700',
+  INACTIVE: 'bg-gray-100 ring-gray-600 text-gray-700',
+  DELETED: 'bg-red-100 ring-red-600 text-red-700',
+  IN_REVIEW: 'bg-yellow-100 ring-yellow-600 text-yellow-700',
+  ACCEPTED: 'bg-green-100 ring-green-600 text-green-700',
+  REJECTED: 'bg-red-100 ring-red-600 text-red-700',
+  CANCELLED: 'bg-gray-100 ring-gray-600 text-gray-700',
+  SUCCESS: 'bg-green-100 ring-green-600 text-green-700',
+  FAILED: 'bg-red-100 ring-red-600 text-red-700',
+  PENDING: 'bg-yellow-100 ring-yellow-600 text-yellow-700',
+}
 
 export default function DynamicTable({
   columns,
@@ -186,84 +189,72 @@ export default function DynamicTable({
   btnCssForm = null,
   titleForm = null,
   schemaUpdate = null,
-  fieldUpdate = []
+  fieldUpdate = [],
 }) {
   const [selectData, setSelectData] = useState({
     id: 1,
-  });
+  })
 
-  const [modalUpdate , setModalUpdate] = useState(false);
+  const [commonLoading, setCommonLoading] = useState(false)
 
-  const [formOpen, setFormOpen] = useState(false);
+  const [modalUpdate, setModalUpdate] = useState(false)
+
+  const [formOpen, setFormOpen] = useState(false)
   const [dialogSettings, setDialogSettings] = useState({
     isOpen: false,
-    title: "Delete user ... ",
-    desc: "When you click to delete user will be deleted in database",
-    btn: "Delete",
-    btnCss: "bg-indigo-600",
-    action: "delete",
-  });
+    title: 'Delete user ... ',
+    desc: 'When you click to delete user will be deleted in database',
+    btn: 'Delete',
+    btnCss: 'bg-indigo-600',
+    action: 'delete',
+  })
 
   const [modalSetting, setModalSetting] = useState({
-    title: "",
-    desc: "",
+    title: '',
+    desc: '',
     isError: false,
     isOpen: false,
-  });
+  })
 
-  const [modalProductDetail, setModalProductDetail] = useState(false);
-  const [modalOfferDetail, setModalOfferDetail] = useState(false);
+  const [modalProductDetail, setModalProductDetail] = useState(false)
+  const [modalOfferDetail, setModalOfferDetail] = useState(false)
 
   const handleModal = (data) => {
     setModalSetting({
       ...data,
-    });
-  };
+    })
+  }
 
   const [pageSetting, setPageSetting] = useState({
     page: 1,
     perPage: 10,
-  });
+  })
 
-  const [initialDataUpdate, setInitialDataUpdate] = useState({});
- 
+  const [initialDataUpdate, setInitialDataUpdate] = useState({})
 
   const [{ data: findMany, loading, error: findManyError }, handleFindMany] =
     useAxios({
       url: `${url}`,
       axios: axiosInstance,
-      method: "GET",
+      method: 'GET',
       params: {
         ...Object.fromEntries(
           Object.entries(query).filter(
-            ([_key, value]) => value !== null && value !== ""
-          )
+            ([_key, value]) => value !== null && value !== '',
+          ),
         ),
         ...pageSetting,
       },
-    });
-
-  const [
-    { data: findOne, loading: findOneLoading, error: findOneError },
-    handleFindOne,
-  ] = useAxios(
-    {
-      url: `${url}/${selectData.id}`,
-      axios: axiosInstance,
-      method: "GET",
-    },
-    { manual: true }
-  );
-
+    })
   const [{ loading: deleteLoading, error: deleteError }, handleDeleteData] =
     useAxios(
       {
         url: `${url}/${selectData.id}`,
         axios: axiosInstance,
-        method: "DELETE",
+        method: 'DELETE',
       },
-      { manual: true }
-    );
+      { manual: true },
+    )
 
   const [
     { data: updateData, loading: updateLoading, error: updateError },
@@ -272,97 +263,229 @@ export default function DynamicTable({
     {
       url: `${url}/${selectData.id}`,
       axios: axiosInstance,
-      method: "PATCH",
+      method: 'PUT',
     },
-    { manual: true }
-  );
+    { manual: true },
+  )
 
-  const handleConfirmed = async (status) => {
-    console.log("status", status);
-    await handleUpdate({
-      ...selectData,
-      status: status,
-    });
-  };
+  const [confirmValue, setConfirmValue] = useState(false)
+  const handleConfirmed = async (status, data) => {
+    setSelectData(data)
+    setConfirmValue(status)
+    setDialogSettings({
+      isOpen: true,
+      title: `Confirm ${url.split('/')[1]}`,
+      desc: `Do  you want to ${status} this ${url.split('/')[1]}?`,
+      btnCss: 'bg-blue-600',
+      btn: 'Confirm',
+      action: 'confirm',
+    })
+  }
+
+  const handleConfirmData = async () => {
+    setCommonLoading(true)
+    try {
+      const response = await axios.put(
+        `${API_URL}${url}/${selectData.id}`,
+        { action: confirmValue },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+        },
+      )
+
+      handleFindMany()
+    } catch (error) {
+      handleModal({
+        loading: false,
+        title: `${title} Notification`,
+        desc: error.response.data.errors[0].message,
+        isError: true,
+        isOpen: true,
+      })
+    } finally {
+      setCommonLoading(false)
+    }
+  }
 
   const handleAction = async (action) => {
     switch (action) {
-      case "delete":
-        await handleDeleteData();
-        break;
+      case 'delete':
+        await handleDeleteData()
+        break
 
-      case "update":
-        setModalUpdate(true);
-        break;
+      case 'update':
+        setModalUpdate(true)
+        break
+      case 'confirm':
+        handleConfirmData()
+        break
     }
 
-    handleResetDialog();
-    handleFindMany();
-  };
+    handleResetDialog()
+    handleFindMany()
+  }
 
   const handleDelete = async (data) => {
     setSelectData({
       ...data,
-    });
+    })
     setDialogSettings({
       isOpen: true,
-      title: `Delete ${url.split("/")[1]}`,
-      desc: "When you click to delete user will be deleted in database",
-      btn: "Delete",
-      btnCss: "bg-red-600",
-      action: "delete",
-    });
-  };
+      title: `Delete ${url.split('/')[1]}`,
+      desc: 'When you click to delete user will be deleted in database',
+      btn: 'Delete',
+      btnCss: 'bg-red-600',
+      action: 'delete',
+    })
+  }
 
   const handleClose = () => {
     setDialogSettings({
       ...dialogSettings,
       isOpen: false,
-    });
-  };
+    })
+  }
 
   const handleResetDialog = () => {
     setDialogSettings({
       ...dialogSettings,
       isOpen: false,
-    });
-  };
+    })
+  }
 
   const getValueByAccessor = (item, accessor) => {
-    const keys = accessor.split(".");
-    return keys.reduce((acc, key) => acc && acc[key], item);
-  };
+    const keys = accessor.split('.')
+    return keys.reduce((acc, key) => acc && acc[key], item)
+  }
 
   const handleView = async (data) => {
-    console.log("url", url, url == "/products" ? "product" : "offer");
-    url == "/products"
-      ? setModalProductDetail(true)
-      : setModalOfferDetail(true);
-    setSelectData(data);
-  };
+    console.log('url', url, url == '/products' ? 'product' : 'offer')
+    url == '/products' ? setModalProductDetail(true) : setModalOfferDetail(true)
+    setSelectData(data)
+  }
+
+  const handleModalDataForm = async (data) => {
+    const updateData = fieldUpdate.reduce((acc, field) => {
+      console.log('field', field, data[field])
+      acc[field] = data[field]
+      return acc
+    }, {})
+
+    console.log('updateData', updateData)
+
+    setInitialDataUpdate(updateData)
+    setSelectData(data)
+    setModalUpdate(true)
+  }
 
   const handleUpdateData = async (data) => {
+    setModalUpdate(false)
+    setCommonLoading(true)
+    try {
+      const formData = new FormData()
+      Object.keys(data).forEach((key) => {
+        if (key === 'image') {
+          let image
+          if (data.image[0].originFileObj) {
+            image = data.image[0].originFileObj
+          } else {
+            image = data.image[0]
+          }
+          formData.append('image', image)
+        } else {
+          formData.append(key, data[key])
+        }
+      })
 
-    const updateData = fieldUpdate.reduce((acc, field) => {
-      console.log("field", field , data[field]);
-      acc[field] = data[field];
-      return acc;
-    } , {});
+      const response = await axios.put(
+        `${API_URL}${url}/${selectData.id}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+        },
+      )
+      handleModal({
+        loading: false,
+        title: `${title} Notification`,
+        desc: response.data.message,
+        isError: false,
+        isOpen: true,
+      })
 
-    console.log("updateData", updateData);
+      handleFindMany()
+    } catch (error) {
+      console.log('error', error)
+      handleModal({
+        loading: false,
+        title: `${title} Notification`,
+        desc: error.response.data.errors[0].message,
+        isError: true,
+        isOpen: true,
+      })
+    } finally {
+      setCommonLoading(false)
+    }
+  }
 
-    setInitialDataUpdate(updateData);
-    setSelectData(data);
-    setModalUpdate(true);
-  };
+  const handleAddData = async (data) => {
+    setFormOpen(false)
+    setCommonLoading(true)
+    try {
+      const formData = new FormData()
+      Object.keys(data).forEach((key) => {
+        if (key === 'image') {
+          let image
+          if (data.image[0].originFileObj) {
+            image = data.image[0].originFileObj
+          } else {
+            image = data.image[0]
+          }
+          formData.append('image', image)
+        } else {
+          formData.append(key, data[key])
+        }
+      })
 
-  console.log("urls", url);
+      const response = await axios.post(`${API_URL}${url}/`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+      })
+      handleModal({
+        loading: false,
+        title: `${title} Notification`,
+        desc: response.data.message,
+        isError: false,
+        isOpen: true,
+      })
+
+      handleFindMany()
+    } catch (error) {
+      console.log('error', error)
+      handleModal({
+        loading: false,
+        title: `${title} Notification`,
+        desc: error.response.data.errors[0].message,
+        isError: true,
+        isOpen: true,
+      })
+    } finally {
+      setCommonLoading(false)
+    }
+    handleClose(false)
+  }
+
   return (
     <>
-      {findOneLoading ||
-        updateLoading ||
-        deleteLoading ||
-        (loading && <Loading />)}
+      {(updateLoading || deleteLoading || loading || commonLoading) && (
+        <Loading />
+      )}
       <div className="bg-white min-h-[70vh]">
         <div className="w-full py-6 sm:px-6  lg:px-8">
           <div className="px-4 sm:px-6 lg:px-8">
@@ -422,17 +545,24 @@ export default function DynamicTable({
                                             src={
                                               typeof getValueByAccessor(
                                                 item,
-                                                column.accessor
-                                              ) != "string"
+                                                column.accessor,
+                                              ) != 'string'
                                                 ? JSON.parse(
                                                     getValueByAccessor(
                                                       item,
-                                                      column.accessor
-                                                    )
-                                                  )[0]
+                                                      column.accessor,
+                                                    ),
+                                                  ).length > 0
+                                                  ? JSON.parse(
+                                                      getValueByAccessor(
+                                                        item,
+                                                        column.accessor,
+                                                      ),
+                                                    )[0]
+                                                  : ''
                                                 : getValueByAccessor(
                                                     item,
-                                                    column.accessor
+                                                    column.accessor,
                                                   )
                                             }
                                             className="h-11 w-11 rounded-full"
@@ -443,23 +573,23 @@ export default function DynamicTable({
                                       convertDateFormat(
                                         getValueByAccessor(
                                           item,
-                                          column.accessor
-                                        )
+                                          column.accessor,
+                                        ),
                                       )
-                                    ) : column.accessor === "status" ? (
+                                    ) : column.accessor === 'status' ? (
                                       <span
                                         className={`${
                                           status[
                                             getValueByAccessor(
                                               item,
-                                              column.accessor
+                                              column.accessor,
                                             )
                                           ]
                                         } inline-flex items-center rounded-md px-2 py-1 text-xs font-medium  ring-1 ring-inset `}
                                       >
                                         {getValueByAccessor(
                                           item,
-                                          column.accessor
+                                          column.accessor,
                                         )}
                                       </span>
                                     ) : !column.isDescription ? (
@@ -468,8 +598,8 @@ export default function DynamicTable({
                                       descConvert(
                                         getValueByAccessor(
                                           item,
-                                          column.accessor
-                                        )
+                                          column.accessor,
+                                        ),
                                       )
                                     )}
                                   </td>
@@ -478,14 +608,14 @@ export default function DynamicTable({
                                 <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                                   <DropdownMenu
                                     handleView={handleView}
-                                    handleUpdate={handleUpdateData}
+                                    handleUpdate={handleModalDataForm}
                                     handleDelete={handleDelete}
                                     data={item}
                                     isAction={
-                                      getValueByAccessor(item, "status") ==
-                                        "ACCEPTED" ||
-                                      getValueByAccessor(item, "status") ==
-                                        "REJECTED"
+                                      getValueByAccessor(item, 'status') ==
+                                        'ACCEPTED' ||
+                                      getValueByAccessor(item, 'status') ==
+                                        'REJECTED'
                                     }
                                     isConfirmed={isConfirmed}
                                     handleConfirmed={handleConfirmed}
@@ -537,21 +667,19 @@ export default function DynamicTable({
       )}
 
       {findManyError ||
-        findOneError ||
         deleteError ||
         (updateError && (
           <Modal
             title={`Notification ${title}`}
             desc={
               errorRender(findManyError) ||
-              errorRender(findOneError) ||
               errorRender(deleteError) ||
               errorRender(updateError)
             }
           />
         ))}
 
-      {url == "/products" && modalProductDetail && (
+      {url == '/products' && modalProductDetail && (
         <ModalProductDetail
           open={modalProductDetail}
           fields={fieldDetails}
@@ -559,7 +687,7 @@ export default function DynamicTable({
           product={selectData}
         />
       )}
-      {url == "/offers" && modalOfferDetail && (
+      {url == '/offers' && modalOfferDetail && (
         <ModalOfferDetail
           open={modalOfferDetail}
           fields={fieldDetails}
@@ -589,33 +717,36 @@ export default function DynamicTable({
           url={`${url}`}
           handleClose={setFormOpen}
           handleModal={handleModal}
+          handleAddData={handleAddData}
         />
       )}
 
-      {
-        modalUpdate &&
+      {modalUpdate && (
         <DynamicFormUpdate
-        title="Update Product"
-        btn="Update"
-        btnCss="bg-blue-500 "
-        formConfig={formConfig}
-        url={url}
-        schema={schemaUpdate}
-        initialData={initialDataUpdate}
-        handleClose={()=>{setModalUpdate(false)}}
-        handleModal={handleModal}
-      />
-      }
+          title="Update Product"
+          btn="Update"
+          btnCss="bg-blue-500 "
+          formConfig={formConfig}
+          url={url}
+          schema={schemaUpdate}
+          initialData={initialDataUpdate}
+          handleUpdateData={handleUpdateData}
+          handleClose={() => {
+            setModalUpdate(false)
+          }}
+          handleModal={handleModal}
+        />
+      )}
     </>
-  );
+  )
 }
 const errorRender = (errors) => {
-  if (!errors) return false;
+  if (!errors) return false
   return (
     <div>
       {errors.response.data.errors.forEach((error) => {
-        return <p className="mt-2 text-sm text-red-600">{error.message}</p>;
+        return <p className="mt-2 text-sm text-red-600">{error.message}</p>
       })}
     </div>
-  );
-};
+  )
+}

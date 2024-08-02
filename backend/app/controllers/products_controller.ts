@@ -19,14 +19,16 @@ export default class ProductsController {
 
     const payload = await createProductValidator.validate(data)
 
-    response.ok(await ProductService.create(payload, auth.user as any))
+    response.ok({
+      data: await ProductService.create(payload, auth.user as any),
+      message: 'Product created successfully',
+    })
   }
 
   async update({ request, auth, response }: HttpContext) {
     console.log('request.all()', request.all())
     const { productName, price, quantity, description, status } = request.all()
     const image = request.files('image', { extnames: ['jpg', 'png'], size: '10mb' })
-    console.log('Images ', image)
 
     const data = {
       productName,
@@ -39,17 +41,24 @@ export default class ProductsController {
 
     const payload = await updateProductValidator.validate(data)
 
-    response.ok(
-      await ProductService.update(payload, request.params().id.toString(), auth.user as any)
-    )
+    response.ok({
+      data: await ProductService.update(payload, request.params().id, auth.user as any),
+      message: 'Product updated successfully',
+    })
   }
 
   async findOneById({ response, request }: HttpContext) {
-    response.ok(await ProductService.getProductById(request.params().id, request.qs()))
+    response.ok({
+      data: await ProductService.getProductById(request.params().id, request.qs()),
+      message: 'Product found successfully',
+    })
   }
 
   async delete({ response, request, auth }: HttpContext) {
-    response.ok(await ProductService.delete(request.params().id, auth.user as any))
+    response.ok({
+      data: await ProductService.delete(request.params().id, auth.user as any),
+      message: 'Product deleted successfully',
+    })
   }
 
   async findManyWithPagination({ response, request }: HttpContext) {

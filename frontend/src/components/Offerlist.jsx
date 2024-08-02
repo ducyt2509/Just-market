@@ -1,13 +1,13 @@
-import { useState } from "react";
-import DynamicForm from "./DynamicFormDialog";
-import { convertDateFormat } from "../config/timeConvert";
+import { useState } from 'react'
+import DynamicForm from './DynamicFormDialog'
+import { convertDateFormat } from '../config/timeConvert'
 
 const status = {
-  ACCEPTED: "bg-green-100 ring-green-600 text-green-700",
-  REJECTED: "bg-red-100 ring-red-600 text-red-700",
-  PENDING: "bg-yellow-100 ring-yellow-600 text-yellow-700",
-  CANCELLED: "bg-gray-100 ring-gray-600 text-gray-700",
-};
+  ACCEPTED: 'bg-green-100 ring-green-600 text-green-700',
+  REJECTED: 'bg-red-100 ring-red-600 text-red-700',
+  PENDING: 'bg-yellow-100 ring-yellow-600 text-yellow-700',
+  CANCELLED: 'bg-gray-100 ring-gray-600 text-gray-700',
+}
 
 export default function OfferList({ offers }) {
   return (
@@ -44,7 +44,7 @@ export default function OfferList({ offers }) {
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      Amount
+                      Offer Price
                     </th>
 
                     <th
@@ -71,7 +71,7 @@ export default function OfferList({ offers }) {
                               <img
                                 alt=""
                                 src={
-                                  "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                  'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
                                 }
                                 className="h-11 w-11 rounded-full"
                               />
@@ -97,8 +97,8 @@ export default function OfferList({ offers }) {
                           </span>
                         </td>
                         <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                          <span className="inline-flex items-center rounded-md  px-2 py-1 text-xs font-medium ">
-                            {offer.amount}
+                          <span className="inline-flex items-center rounded-md  px-2 py-1  font-medium ">
+                            {offer.amount} eth
                           </span>
                         </td>
                         <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
@@ -115,8 +115,11 @@ export default function OfferList({ offers }) {
                     ))
                   ) : (
                     <tr>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                        No offers yet
+                      <td
+                        className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"
+                        colSpan="5"
+                      >
+                        <p className="text-center">No offers yet</p>
                       </td>
                     </tr>
                   )}
@@ -127,5 +130,5 @@ export default function OfferList({ offers }) {
         </div>
       </div>
     </>
-  );
+  )
 }

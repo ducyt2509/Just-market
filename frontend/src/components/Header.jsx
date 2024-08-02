@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import { Bars3Icon } from "@heroicons/react/20/solid";
-import { XMarkIcon } from "@heroicons/react/24/outline";
-import { WalletIcon } from "@heroicons/react/24/outline";
-import { Dialog, DialogPanel, PopoverGroup } from "@headlessui/react";
+import { useState } from 'react'
+import { useAuth } from '../context/AuthContext'
+import { Bars3Icon } from '@heroicons/react/20/solid'
+import { XMarkIcon } from '@heroicons/react/24/outline'
+import { WalletIcon } from '@heroicons/react/24/outline'
+import { Dialog, DialogPanel, PopoverGroup } from '@headlessui/react'
 
 import {
   Menu,
@@ -11,18 +11,18 @@ import {
   MenuItem,
   MenuItems,
   TransitionChild,
-} from "@headlessui/react";
-import { ChevronDownIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+} from '@headlessui/react'
+import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 
 const userNavigation = [
-  { name: "Your profile", href: "#" },
-  { name: "Sign out", href: "/login" },
-  { name: "Dashboard", href: "/dashboard" },
-];
+  { name: 'Your profile', href: '#' },
+  { name: 'Sign out', href: '/login' },
+  { name: 'Dashboard', href: '/dashboard' },
+]
 
 export default function Header() {
-  const { user } = useAuth();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user } = useAuth()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
     <header className="bg-white">
@@ -33,11 +33,7 @@ export default function Header() {
         <div className="flex lg:flex-1">
           <a href="#" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
-            <img
-              alt=""
-              src="https://logowik.com/content/uploads/images/cristiano-ronaldo.jpg"
-              className="h-20 w-auto"
-            />
+            <img src={'/logo.png'} className="h-20 w-auto" />
           </a>
         </div>
         <div className="flex lg:hidden">
@@ -91,7 +87,7 @@ export default function Header() {
             <div className="justify-center align-center flex gap-4">
               <span className="text-sm font-semibold leading-6 text-white flex gap-3 rounded bg-gray-400 p-1 justify-center items-center">
                 <WalletIcon aria-hidden="true" className="h-6 w-6" />
-                <span className="">900 Eth</span>
+                <span className="">900 eth</span>
               </span>
 
               <Menu as="div" className="relative">
@@ -201,5 +197,5 @@ export default function Header() {
         </DialogPanel>
       </Dialog>
     </header>
-  );
+  )
 }

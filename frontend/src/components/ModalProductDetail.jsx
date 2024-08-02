@@ -1,6 +1,6 @@
 /*
   This example requires some changes to your config:
-  
+
   ```
   // tailwind.config.js
   module.exports = {
@@ -15,31 +15,35 @@
 'use client'
 
 import { useState } from 'react'
-import { Dialog, DialogBackdrop, DialogPanel, Radio, RadioGroup } from '@headlessui/react'
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+  Radio,
+  RadioGroup,
+} from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { StarIcon } from '@heroicons/react/20/solid'
-import { convertDateFormat } from './../config/timeConvert';
-
+import { convertDateFormat } from './../config/timeConvert'
 
 const status = {
-  ACTIVE: "bg-green-100 ring-green-600 text-green-700",
-  INACTIVE: "bg-gray-100 ring-gray-600 text-gray-700",
-  DELETED: "bg-red-100 ring-red-600 text-red-700",
-  IN_REVIEW: "bg-yellow-100 ring-yellow-600 text-yellow-700",
-  ACCEPTED: "bg-green-100 ring-green-600 text-green-700",
-  REJECTED: "bg-red-100 ring-red-600 text-red-700",
-  CANCELLED: "bg-gray-100 ring-gray-600 text-gray-700",
-  SUCCESS: "bg-green-100 ring-green-600 text-green-700",
-  FAILED: "bg-red-100 ring-red-600 text-red-700",
-  PENDING: "bg-yellow-100 ring-yellow-600 text-yellow-700",
-};
+  ACTIVE: 'bg-green-100 ring-green-600 text-green-700',
+  INACTIVE: 'bg-gray-100 ring-gray-600 text-gray-700',
+  DELETED: 'bg-red-100 ring-red-600 text-red-700',
+  IN_REVIEW: 'bg-yellow-100 ring-yellow-600 text-yellow-700',
+  ACCEPTED: 'bg-green-100 ring-green-600 text-green-700',
+  REJECTED: 'bg-red-100 ring-red-600 text-red-700',
+  CANCELLED: 'bg-gray-100 ring-gray-600 text-gray-700',
+  SUCCESS: 'bg-green-100 ring-green-600 text-green-700',
+  FAILED: 'bg-red-100 ring-red-600 text-red-700',
+  PENDING: 'bg-yellow-100 ring-yellow-600 text-yellow-700',
+}
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function ModalProductDetail({ open, handleClose, product }) {
-
   return (
     <Dialog open={open} onClose={handleClose} className="relative z-10">
       <DialogBackdrop
@@ -65,29 +69,50 @@ export default function ModalProductDetail({ open, handleClose, product }) {
 
               <div className="grid w-full grid-cols-1 items-start gap-x-6 gap-y-8 sm:grid-cols-12 lg:gap-x-8">
                 <div className="aspect-h-3 aspect-w-2 overflow-hidden rounded-lg bg-gray-100 sm:col-span-4 lg:col-span-5">
-                  <img alt={product.productName} src={JSON.parse(
-                    product.image
-                  )[0]} className="object-cover object-center" />
+                  <img
+                    alt={product.productName}
+                    src={JSON.parse(product.image)[0]}
+                    className="object-cover object-center"
+                  />
                 </div>
                 <div className="sm:col-span-8 lg:col-span-7">
-                  <h2 className="text-2xl font-bold text-gray-900 sm:pr-12">{product.productName}</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 sm:pr-12">
+                    {product.productName}
+                  </h2>
 
-                  <section aria-labelledby="information-heading" className="mt-2">
+                  <section
+                    aria-labelledby="information-heading"
+                    className="mt-2"
+                  >
                     <h3 id="information-heading" className="sr-only">
                       Product information
                     </h3>
 
-                    <p className="text-xl text-gray-900">Price:{product.price} ETH</p>
+                    <p className="text-xl text-gray-900">
+                      Price:{product.price} eth
+                    </p>
 
-                    <p className="mt-3 text-base text-gray-500">{product.description}</p>
+                    <p className="mt-3 text-base text-gray-500">
+                      {product.description}
+                    </p>
 
-
-                    <p className={`mt-3 text-base text-gray-500`}>Status: <span className={`${ status[product.status]} inline-flex items-center rounded-md px-2 py-1 text-xs font-medium  ring-1 ring-inset`}>{" "}{product.status}</span></p>
-                    <p className='mt-3 text-base text-gray-500'>Created At: {convertDateFormat(product.createdAt)}</p>
-                    <p className='mt-3 text-base text-gray-500'>Updated At: {convertDateFormat(product.updatedAt)}</p>
-
-
-
+                    <p className={`mt-3 text-base text-gray-500`}>
+                      Status:{' '}
+                      <span
+                        className={`${
+                          status[product.status]
+                        } inline-flex items-center rounded-md px-2 py-1 text-xs font-medium  ring-1 ring-inset`}
+                      >
+                        {' '}
+                        {product.status}
+                      </span>
+                    </p>
+                    <p className="mt-3 text-base text-gray-500">
+                      Created At: {convertDateFormat(product.createdAt)}
+                    </p>
+                    <p className="mt-3 text-base text-gray-500">
+                      Updated At: {convertDateFormat(product.updatedAt)}
+                    </p>
                   </section>
 
                   {/* <section aria-labelledby="options-heading" className="mt-10">
@@ -96,7 +121,7 @@ export default function ModalProductDetail({ open, handleClose, product }) {
                     </h3>
 
                     <form>
-                      {/* Colors 
+                      {/* Colors
                       <fieldset aria-label="Choose a color">
                         <legend className="text-sm font-medium text-gray-900">Color</legend>
 
@@ -127,7 +152,7 @@ export default function ModalProductDetail({ open, handleClose, product }) {
                         </RadioGroup>
                       </fieldset>
 
-                    
+
                       <fieldset aria-label="Choose a size" className="mt-10">
                         <div className="flex items-center justify-between">
                           <div className="text-sm font-medium text-gray-900">Size</div>
